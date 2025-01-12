@@ -6,27 +6,27 @@ public class Pendulum : MonoBehaviour
 {
     Rigidbody2D rgb2d;
 
-    public float moveSpeed; // velocidade do pêndulo
-    public float leftAngle; // ângulo limite à esquerda
-    public float rightAngle; // ângulo limite à direita
+    public float moveSpeed; // Speed of the pendulum
+    public float leftAngle; // Left limit angle
+    public float rightAngle; // Right limit angle
 
-    // variável para determinar a direção do movimento
+    // Variable to determine the direction of movement
     bool movingClockwise;
 
     [Header("Audio Settings")]
-    public AudioClip pendulumSound; // Som do pêndulo
-    private AudioSource audioSource; // Referência ao AudioSource
+    public AudioClip pendulumSound; // Sound of the pendulum
+    private AudioSource audioSource; // Reference to AudioSource
 
     [Header("Player Settings")]
-    public GameObject player; // Referência ao jogador
-    public float soundActivationDistance = 5f; // Distância para ativar o som
+    public GameObject player; // Reference to the player
+    public float soundActivationDistance = 5f; // Distance to activate the sound
 
     void Start()
     {
         rgb2d = GetComponent<Rigidbody2D>();
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.clip = pendulumSound;
-        audioSource.loop = false; // Não repetir o som, ele só será reproduzido ao mudar de direção
+        audioSource.loop = false; // Don't repeat the sound, it will only play when changing direction
 
         movingClockwise = true;
     }
@@ -38,21 +38,21 @@ public class Pendulum : MonoBehaviour
 
     public void ChangeMoveDir()
     {
-        // rotacionar em z 
+        // Rotate in z-axis
         float zRotation = transform.eulerAngles.z;
-        // ajusta o ângulo para estar entre -180 e 180 graus
+        // Adjust the angle to be between -180 and 180 degrees
         zRotation = (zRotation > 180) ? zRotation - 360 : zRotation;
 
-        // Muda a direção baseado nos ângulos de limite
+        // Change direction based on limit angles
         if (movingClockwise && zRotation >= rightAngle)
         {
             movingClockwise = false;
-            PlayPendulumSoundIfPlayerIsNear(); // Tocar som quando muda de direção
+            PlayPendulumSoundIfPlayerIsNear(); // Play sound when changing direction
         }
         else if (!movingClockwise && zRotation <= leftAngle)
         {
             movingClockwise = true;
-            PlayPendulumSoundIfPlayerIsNear(); // Tocar som quando muda de direção
+            PlayPendulumSoundIfPlayerIsNear(); // Play sound when changing direction
         }
     }
 
@@ -69,18 +69,18 @@ public class Pendulum : MonoBehaviour
         }
     }
 
-    // Verificar se o jogador está perto e tocar o som do pêndulo
+    // Check if the player is nearby and play the pendulum sound
     private void PlayPendulumSoundIfPlayerIsNear()
     {
         if (player != null)
         {
-            // Calcula a distância entre o jogador e o pêndulo
+            // Calculate the distance between the player and the pendulum
             float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
 
-            // Se o jogador estiver dentro da distância especificada, toca o som
+            // If the player is within the specified distance, play the sound
             if (distanceToPlayer <= soundActivationDistance)
             {
-                if (!audioSource.isPlaying) // Toca apenas se não estiver tocando
+                if (!audioSource.isPlaying) // Play only if not already playing
                 {
                     audioSource.Play();
                 }
